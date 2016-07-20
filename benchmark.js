@@ -5,38 +5,38 @@ import cached from './lib';
 import 'babel-polyfill';
 
 const RUN_TIME = 2000;
+const WARMUP_TIME = 500;
 
 const factory = () => Promise.resolve(123);
 
-const baseline = (() => factory => factory)();
+const setupBenchmark = ({fn, name}) => async () => {
+  const warmupTime = new Date();
+  while (new Date() - warmupTime < WARMUP_TIME) {
+    await fn();
+  }
 
-const baselineBenchmark = async () => {
   const start = new Date();
   let count = 0;
   let end;
   for (end = new Date(); end - start < RUN_TIME; end = new Date()) {
     count++;
-    await baseline();
+    await fn();
   }
 
-  console.log(`baseline ${count / (end - start)} operations / ms`);
+  console.log(`${name} ${count / (end - start)} operations / ms`);
 };
 
-const cachedBenchmark = async () => {
-  const start = new Date();
-  let count = 0;
-  const cachedFactory = cached(factory);
-  let end;
-  for (end = new Date(); end - start < RUN_TIME; end = new Date()) {
-    count++;
-    await cachedFactory();
-  }
-  console.log(`cached ${count / (end - start)} operations / ms`);
-};
+const baselineBenchmark = setupBenchmark({
+  fn: factory,
+  name: 'baseline'
+});
 
-// I got very irregular perormance running this in an async function
-baselineBenchmark()
-  .then(cachedBenchmark())
-  .catch(err => {
-    throw err;
-  });
+const cachedBenchmark = setupBenchmark({
+  fn: cached(factory),
+  name: 'cached'
+});
+
+(async () => {
+  await baselineBenchmark();
+  await cachedBenchmark();
+})();
