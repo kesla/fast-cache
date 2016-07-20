@@ -1,36 +1,42 @@
+/* eslint-disable babel/no-await-in-loop */
+
 import cached from './lib';
 
-import 'babel-polyfill'
+import 'babel-polyfill';
 
 const RUN_TIME = 2000;
 
-const baseline = async () => {
+const factory = () => Promise.resolve(123);
+
+const baseline = (() => factory => factory)();
+
+const baselineBenchmark = async () => {
   const start = new Date();
   let count = 0;
-  while (true) {
-    const end = new Date();
-    if (end - start > RUN_TIME) {
-      console.log(`baseline ${count / (end - start)} operations / ms`);
-      return
-    }
+  let end;
+  for (end = new Date(); end - start < RUN_TIME; end = new Date()) {
     count++;
+    await baseline();
   }
+
+  console.log(`baseline ${count / (end - start)} operations / ms`);
 };
 
 const cachedBenchmark = async () => {
   const start = new Date();
   let count = 0;
-  while (true) {
-    const end = new Date();
-    if (end - start > RUN_TIME) {
-      console.log(`cached ${count / (end - start)} operations / ms`);
-      return;
-    }
+  const cachedFactory = cached(factory);
+  let end;
+  for (end = new Date(); end - start < RUN_TIME; end = new Date()) {
     count++;
+    await cachedFactory();
   }
+  console.log(`cached ${count / (end - start)} operations / ms`);
 };
 
-(async () => {
-  await baseline();
-  await cachedBenchmark();
-})();
+// I got very irregular perormance running this in an async function
+baselineBenchmark()
+  .then(cachedBenchmark())
+  .catch(err => {
+    throw err;
+  });
