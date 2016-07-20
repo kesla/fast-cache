@@ -39,3 +39,36 @@ test('concurrent', async t => {
   t.deepEqual(actual, expected);
   t.is(called, 1);
 });
+
+test('simple, error', async t => {
+  const c = cached(() => Promise.reject(new Error('beep')));
+  await t.throws(c());
+});
+
+test('series, errors', async t => {
+  let called = 0;
+  const c = cached(() => {
+    called++;
+    return Promise.reject(new Error('beep'));
+  });
+
+  await t.throws(c());
+  await t.throws(c());
+
+  t.is(called, 2);
+});
+
+test('concurrent, erros', async t => {
+  let called = 0;
+  const c = cached(() => {
+    called++;
+    return new Promise((resolve, reject) => {
+      setTimeout(() => reject(new Error('beep')), 5);
+    });
+  });
+  t.throws(Promise.all([
+    c(), c()
+  ]));
+
+  t.is(called, 1);
+});
