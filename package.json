@@ -4,7 +4,7 @@
   "description": "Cache by wrapping a method returning a promise",
   "main": "dist/index.js",
   "scripts": {
-    "test": "babel-tape-runner test.js",
+    "test": "xo && babel-tape-runner test.js",
     "build": "rm -rf dist && mkdir -p dist && babel lib --out-dir dist",
     "watch": "rm -rf dist && mkdir -p dist && babel -w lib --out-dir dist",
     "prepublish": "npm run build"
@@ -19,6 +19,11 @@
     "babel-polyfill": "^6.9.1",
     "babel-preset-es2015": "6.9.0",
     "babel-tape-runner": "^2.0.1",
-    "tapava": "^2.2.0"
+    "tapava": "^2.2.0",
+    "xo": "^0.16.0"
+  },
+  "xo": {
+    "esnext": true,
+    "space": true
   }
 }
