@@ -66,9 +66,20 @@ test('concurrent, erros', async t => {
       setTimeout(() => reject(new Error('beep')), 5);
     });
   });
-  t.throws(Promise.all([
+  await t.throws(Promise.all([
     c(), c()
   ]));
 
   t.is(called, 1);
+});
+
+test('.keyCache', async t => {
+  const c = cached.keyCache(id => Promise.resolve(id.toUpperCase()));
+  const actual1 = await c('foo');
+  const actual2 = await c('foo');
+  const actual3 = await c('bar');
+
+  t.is(actual1, 'FOO');
+  t.is(actual2, 'FOO');
+  t.is(actual3, 'BAR');
 });

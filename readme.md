@@ -14,6 +14,7 @@ npm install fast-cache --save
 
 ```js
 import fastCache from 'fast-cache';
+import {keyCache} from 'fast-cache';
 
 // this will only be called once since it'll get cached
 const fn = () => {
@@ -29,6 +30,19 @@ cached().then(json => {
 
 cached().then(json => {
   console.log('json2', json);
+});
+
+const keyBased = keyCache(id => {
+  // again, this is just an example. just needs to be something returning a promise
+  return fetch(`http://example.com/${id}`);
+});
+
+keyBased('id1').then(response => {
+  console.log('id1 response', response);
+});
+
+keyBased('id2').then(response => {
+  console.log('different response from id1', response);
 });
 
 ```
@@ -47,8 +61,8 @@ None
 ## Dev Dependencies
 
 - [async-cache-promise](https://github.com/kesla/async-cache-promise): async-cache - but with promises
-- [babel-cli](https://github.com/babel/babel/tree/master/packages): Babel command line.
-- [babel-core](https://github.com/babel/babel/tree/master/packages): Babel compiler core.
+- [babel-cli](): Babel command line.
+- [babel-core](): Babel compiler core.
 - [babel-plugin-syntax-async-functions](https://github.com/babel/babel/tree/master/packages): Allow parsing of async functions
 - [babel-plugin-transform-async-to-generator](https://github.com/babel/babel/tree/master/packages): Turn async functions into ES2015 generators
 - [babel-polyfill](https://github.com/babel/babel/tree/master/packages): 
