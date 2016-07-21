@@ -1,6 +1,6 @@
 {
   "name": "fast-cache",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Caches a method that returns a promise and does so really fast.",
   "main": "dist/index.js",
   "scripts": {
