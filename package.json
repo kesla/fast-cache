@@ -12,6 +12,7 @@
   "author": "David Björklund <david.bjorklund@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "async-cache-promise": "^2.0.2",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-plugin-syntax-async-functions": "6.8.0",

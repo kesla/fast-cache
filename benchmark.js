@@ -1,42 +1,51 @@
 /* eslint-disable babel/no-await-in-loop */
 
+import 'babel-polyfill';
+import AsyncCache from 'async-cache-promise';
+
 import cached from './lib';
 
-import 'babel-polyfill';
-
-const RUN_TIME = 2000;
-const WARMUP_TIME = 500;
+const WARMUP_ITERATIONS = 10000;
 
 const factory = () => Promise.resolve(123);
 
-const setupBenchmark = ({fn, name}) => async () => {
-  const warmupTime = new Date();
-  while (new Date() - warmupTime < WARMUP_TIME) {
+const setupBenchmark = async ({fn, name, iterations}) => {
+  for (let index = 0; index < WARMUP_ITERATIONS; ++index) {
     await fn();
   }
 
   const start = new Date();
   let count = 0;
-  let end;
-  for (end = new Date(); end - start < RUN_TIME; end = new Date()) {
+  for (let index = 0; index < iterations; ++index) {
     count++;
     await fn();
   }
+  const end = new Date();
 
   console.log(`${name} ${count / (end - start)} operations / ms`);
 };
 
-const baselineBenchmark = setupBenchmark({
-  fn: factory,
-  name: 'baseline'
-});
-
-const cachedBenchmark = setupBenchmark({
-  fn: cached(factory),
-  name: 'cached'
-});
-
 (async () => {
-  await baselineBenchmark();
-  await cachedBenchmark();
+  for (const iterations of [10000, 25000]) {
+    console.log(`${iterations} iterations`);
+    await setupBenchmark({
+      fn: factory,
+      name: 'baseline',
+      iterations
+    });
+    await setupBenchmark({
+      fn: cached(factory),
+      name: 'cached',
+      iterations
+    });
+    const cache = new AsyncCache({
+      load: factory
+    });
+    await setupBenchmark({
+      fn: () => cache.get(''),
+      name: 'async-cache-promise',
+      iterations
+    });
+    console.log();
+  }
 })();
