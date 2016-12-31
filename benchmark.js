@@ -1,4 +1,4 @@
-/* eslint-disable babel/no-await-in-loop */
+/* eslint-disable import/no-extraneous-dependencies, babel/no-await-in-loop, no-console */
 
 import 'babel-polyfill';
 import AsyncCache from 'async-cache-promise';
@@ -9,15 +9,15 @@ const WARMUP_ITERATIONS = 10000;
 
 const factory = () => Promise.resolve(123);
 
-const setupBenchmark = async ({fn, name, iterations}) => {
-  for (let index = 0; index < WARMUP_ITERATIONS; ++index) {
+const setupBenchmark = async ({ fn, name, iterations }) => {
+  for (let index = 0; index < WARMUP_ITERATIONS; index += 1) {
     await fn();
   }
 
   const start = new Date();
   let count = 0;
-  for (let index = 0; index < iterations; ++index) {
-    count++;
+  for (let index = 0; index < iterations; index += 1) {
+    count += 1;
     await fn();
   }
   const end = new Date();

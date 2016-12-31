@@ -13,8 +13,10 @@ npm install fast-cache --save
 ## Usage
 
 ```js
+/* eslint-disable */
+
 import fastCache from 'fast-cache';
-import {keyCache} from 'fast-cache';
+import { keyCache } from 'fast-cache';
 
 // this will only be called once since it'll get cached
 const fn = () => {
@@ -24,24 +26,24 @@ const fn = () => {
 };
 const cached = fastCache(fn);
 
-cached().then(json => {
+cached().then((json) => {
   console.log('json1', json);
 });
 
-cached().then(json => {
+cached().then((json) => {
   console.log('json2', json);
 });
 
-const keyBased = keyCache(id => {
+const keyBased = keyCache((id) => {
   // again, this is just an example. just needs to be something returning a promise
   return fetch(`http://example.com/${id}`);
 });
 
-keyBased('id1').then(response => {
+keyBased('id1').then((response) => {
   console.log('id1 response', response);
 });
 
-keyBased('id2').then(response => {
+keyBased('id2').then((response) => {
   console.log('different response from id1', response);
 });
 
@@ -61,16 +63,16 @@ None
 ## Dev Dependencies
 
 - [async-cache-promise](https://github.com/kesla/async-cache-promise): async-cache - but with promises
-- [babel-cli](): Babel command line.
-- [babel-core](): Babel compiler core.
+- [babel-cli](https://github.com/babel/babel/tree/master/packages): Babel command line.
+- [babel-core](https://github.com/babel/babel/tree/master/packages): Babel compiler core.
 - [babel-plugin-syntax-async-functions](https://github.com/babel/babel/tree/master/packages): Allow parsing of async functions
 - [babel-plugin-transform-async-to-generator](https://github.com/babel/babel/tree/master/packages): Turn async functions into ES2015 generators
-- [babel-polyfill](https://github.com/babel/babel/tree/master/packages): 
+- [babel-polyfill](https://github.com/babel/babel/tree/master/packages): Provides polyfills necessary for a full ES2015+ environment
 - [babel-preset-es2015](https://github.com/babel/babel/tree/master/packages): Babel preset for all es2015 plugins.
 - [babel-tape-runner](https://github.com/wavded/babel-tape-runner): Babel + Tape for running your ES Next tests
+- [miclint](https://github.com/micnews/miclint): mic lint cli
 - [package-json-to-readme](https://github.com/zeke/package-json-to-readme): Generate a README.md from package.json contents
 - [tapava](https://github.com/kesla/tapava): the syntax of ava, run through tape
-- [xo](https://github.com/sindresorhus/xo): JavaScript happiness style linter ❤️
 
 
 ## License
