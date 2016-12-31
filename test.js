@@ -31,9 +31,12 @@ test('concurrent', async t => {
       setTimeout(() => resolve(123), 5);
     });
   });
-  const actual = await Promise.all([
-    c(), c()
-  ]);
+  const p1 = c();
+  const p2 = c();
+
+  t.is(p1, p2, 'always return same promise');
+
+  const actual = await Promise.all([ p1, p2 ]);
   const expected = [123, 123];
 
   t.deepEqual(actual, expected);
